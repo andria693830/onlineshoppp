@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ka" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS TECH - Cyber Store 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            blue: '#00f0ff',
+                            pink: '#ff007f',
+                            purple: '#7000ff',
+                            green: '#00ff66',
+                            yellow: '#ffe600'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * { transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
+        body { font-family: 'Inter', sans-serif; }
+
+        .dark body { background-color: #050811; color: #ffffff; }
+        .dark .glass-card { background: rgba(15, 23, 42, 0.9); border-color: rgba(255, 255, 255, 0.12); }
+        .dark .text-muted { color: #cbd5e1 !important; }
+
+        body:not(.dark) { background-color: #f8fafc; color: #0f172a; }
+        body:not(.dark) .glass-card { background: rgba(255, 255, 255, 0.95); border-color: rgba(0, 0, 0, 0.08); }
+        body:not(.dark) .text-muted { color: #475569 !important; }
+
+        .btn-interact { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .btn-interact:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 10px 25px -5px rgba(0, 240, 255, 0.35); }
+        .btn-interact:active { transform: translateY(1px) scale(0.98); }
+
+        .product-card { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .product-card:hover { transform: translateY(-7px); box-shadow: 0 20px 35px -10px rgba(0, 240, 255, 0.22); border-color: rgba(0, 240, 255, 0.5); }
+
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast-anim { animation: slideInRight 0.3s ease forwards; }
+
+        @keyframes popUp { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .pop-anim { animation: popUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Support Button -->
+    <button onclick="toggleChatWindow()" class="fixed bottom-5 left-5 z-40 bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink text-slate-950 px-4 py-3 rounded-full font-extrabold text-xs flex items-center gap-2.5 shadow-xl shadow-cyber-blue/30 btn-interact group">
+        <div class="relative">
+            <i class="fa-solid fa-headset text-base group-hover:rotate-12 transition-transform"></i>
+            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyber-green rounded-full animate-ping"></span>
+            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyber-green rounded-full"></span>
+        </div>
+        <span class="font-bold tracking-wide" data-i18n="aiSupport">AI მხარდაჭერა 24/7</span>
+    </button>
+
+    <!-- Support Chat -->
+    <div id="chat-window" class="fixed bottom-20 left-5 z-50 w-[90vw] sm:w-[380px] h-[500px] bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl shadow-2xl flex flex-col hidden pop-anim overflow-hidden">
+        <div class="p-4 bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 text-white border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-cyber-blue/20 border border-cyber-blue flex items-center justify-center text-cyber-blue">
+                    <i class="fa-solid fa-robot text-lg animate-pulse"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-sm tracking-wide">NEXUS AI Bot</h3>
+                    <span class="text-[10px] text-cyber-green font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 bg-cyber-green rounded-full"></span> <span data-i18n="online">ონლაინშია</span></span>
+                </div>
+            </div>
+            <button onclick="toggleChatWindow()" class="text-gray-400 hover:text-red-400 p-1.5 rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-950/60 text-xs">
+            <div class="flex gap-2 items-start">
+                <div class="w-7 h-7 rounded-full bg-cyber-blue/20 text-cyber-blue flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-robot"></i></div>
+                <div class="bg-slate-200 dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-slate-900 dark:text-gray-100 max-w-[85%] leading-relaxed shadow-sm" data-i18n="aiWelcome">
+                    გამარჯობა! 👋 მე ვარ NEXUS TECH-ის ციფრული ასისტენტი. რით შემიძლია დაგეხმაროთ?
+                </div>
+            </div>
+        </div>
+        <div class="px-3 py-2 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex gap-1.5 overflow-x-auto whitespace-nowrap">
+            <button onclick="sendQuickMessage('პრომო კოდები')" class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-[10px] font-semibold text-cyber-blue hover:bg-cyber-blue hover:text-slate-950" data-i18n="quickPromos">🎁 პრომოები</button>
+            <button onclick="sendQuickMessage('მიწოდების პირობები')" class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-[10px] font-semibold text-cyber-blue hover:bg-cyber-blue hover:text-slate-950" data-i18n="quickDelivery">🚚 მიწოდება</button>
+            <button onclick="sendQuickMessage('გარანტია')" class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-[10px] font-semibold text-cyber-blue hover:bg-cyber-blue hover:text-slate-950" data-i18n="quickWarranty">🛡️ გარანტია</button>
+        </div>
+        <form onsubmit="handleChatSubmit(event)" class="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2">
+            <input type="text" id="chat-input" data-i18n-ph="chatPh" placeholder="მოგვწერეთ კითხვა..." class="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-cyber-blue">
+            <button type="submit" class="w-9 h-9 bg-cyber-blue text-slate-950 rounded-xl flex items-center justify-center font-bold hover:bg-cyan-300 flex-shrink-0"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+        </form>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 glass-card border-b backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 cursor-pointer select-none group" onclick="resetFilters()">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyber-blue via-cyber-purple to-cyber-pink p-0.5 shadow-lg shadow-cyber-blue/30 group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-bolt text-cyber-blue text-2xl animate-pulse"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-cyber-blue via-purple-400 to-cyber-pink bg-clip-text text-transparent">NEXUS<span class="text-cyber-blue">.TECH</span></span>
+                    <span class="block text-[9px] uppercase tracking-widest text-cyber-blue font-extrabold -mt-1">CYBER STORE 2026</span>
+                </div>
+            </div>
+
+            <div class="hidden md:flex flex-1 max-w-lg relative group">
+                <input type="text" id="search-input" oninput="handleSearch()" data-i18n-ph="searchPh" placeholder="მოძებნე ტექნიკა, მოწყობილობა..." 
+                    class="w-full bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-full py-2.5 pl-11 pr-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyber-blue">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-cyber-blue"></i>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Language Selector -->
+                <div class="relative">
+                    <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-2.5 py-2 text-xs font-bold cursor-pointer focus:outline-none focus:border-cyber-blue">
+                        <option value="ka">GE 🇬🇪</option>
+                        <option value="en">EN 🇺🇸</option>
+                        <option value="de">DE 🇩🇪</option>
+                    </select>
+                </div>
+
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-gray-700 dark:text-gray-200 hover:text-cyber-yellow btn-interact">
+                    <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
+                </button>
+                <button onclick="openWishlistModal()" class="relative p-2.5 rounded-xl bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-gray-700 dark:text-gray-200 hover:text-cyber-pink btn-interact">
+                    <i class="fa-solid fa-heart text-lg"></i>
+                    <span id="wishlist-badge" class="hidden absolute -top-1.5 -right-1.5 bg-cyber-pink text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900">0</span>
+                </button>
+                <button onclick="toggleCartDrawer()" class="relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-cyber-blue/10 border border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue hover:text-slate-950 font-bold text-sm btn-interact">
+                    <i class="fa-solid fa-cart-shopping text-lg"></i>
+                    <span class="hidden sm:inline" data-i18n="cart">კალათა</span>
+                    <span id="cart-badge" class="bg-cyber-blue text-slate-950 text-xs font-black px-2 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner -->
+    <div class="relative py-10 border-b border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/70 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row justify-between items-center gap-6 text-center lg:text-left">
+                <div class="space-y-3">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyber-pink/10 border border-cyber-pink/30 text-cyber-pink text-xs font-bold uppercase tracking-widest">
+                        <i class="fa-solid fa-fire text-sm animate-bounce"></i> CYBER WEEKS 2026
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white" data-i18n="bannerTitle">
+                        მომავლის ტექნოლოგიები საუკეთესო ფასად
+                    </h1>
+                    <p class="text-muted text-xs sm:text-sm max-w-xl" data-i18n="bannerDesc">
+                        ოფიციალური გარანტია, სწრაფი მიწოდება მთელ საქართველოში და ექსკლუზიური პრომოკოდები.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <div onclick="copyPromo('NEXUS2026')" class="bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-4 py-2.5 rounded-2xl text-xs text-slate-900 dark:text-white cursor-pointer btn-interact flex items-center gap-2">
+                        <i class="fa-solid fa-ticket text-cyber-yellow"></i>
+                        <span>15% OFF: <strong class="text-cyber-yellow font-mono">NEXUS2026</strong></span>
+                    </div>
+                    <div onclick="copyPromo('CYBER20')" class="bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-4 py-2.5 rounded-2xl text-xs text-slate-900 dark:text-white cursor-pointer btn-interact flex items-center gap-2">
+                        <i class="fa-solid fa-ticket text-cyber-green"></i>
+                        <span>20% OFF: <strong class="text-cyber-green font-mono">CYBER20</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+            <div id="category-chips" class="flex flex-wrap gap-2"></div>
+            
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                <label for="sort-select" class="text-xs text-muted whitespace-nowrap" data-i18n="sortLabel"><i class="fa-solid fa-arrow-down-short-wide mr-1"></i>სორტირება:</label>
+                <select id="sort-select" onchange="handleSortChange()" class="bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white rounded-xl px-3 py-2 cursor-pointer">
+                    <option value="featured" data-i18n="sortFeatured">პოპულარული</option>
+                    <option value="price-low" data-i18n="sortPriceLow">ფასი: დაბლიდან მაღლა</option>
+                    <option value="price-high" data-i18n="sortPriceHigh">ფასი: მაღლიდან დაბლა</option>
+                    <option value="rating" data-i18n="sortRating">რეიტინგით</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-slate-200 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 mb-8 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-4 flex-wrap">
+                <span class="text-xs font-bold uppercase tracking-wider text-muted" data-i18n="filterTitle"><i class="fa-solid fa-sliders text-cyber-blue mr-1"></i> ფილტრი:</span>
+                <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700">
+                    <span class="text-xs text-muted" data-i18n="maxPrice">მაქს. ფასი:</span>
+                    <input type="range" id="price-range" min="100" max="15000" step="100" value="15000" oninput="handlePriceRange(this.value)" class="w-28 sm:w-40 accent-cyber-blue cursor-pointer">
+                    <span id="price-range-val" class="text-xs font-mono font-bold text-cyber-blue">15000 ₾</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-muted">
+                <span><span data-i18n="foundCount">ნაპოვნია:</span> <strong id="product-count" class="text-cyber-blue font-bold">0</strong></span>
+                <button onclick="resetFilters()" class="text-xs text-cyber-pink font-semibold btn-interact" data-i18n="clearFilter"><i class="fa-solid fa-rotate-left mr-1"></i>გასუფთავება</button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        
+        <div id="no-results" class="hidden text-center py-24">
+            <i class="fa-solid fa-robot text-6xl text-slate-500 mb-4 animate-bounce"></i>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white" data-i18n="noResults">პროდუქტი ვერ მოიძებნა</h3>
+            <p class="text-xs text-muted mt-1" data-i18n="noResultsSub">სცადეთ სხვა ფილტრი ან საძიებო სიტყვა</p>
+            <button onclick="resetFilters()" class="mt-4 px-5 py-2.5 bg-cyber-blue/20 border border-cyber-blue text-cyber-blue rounded-xl text-xs font-bold btn-interact" data-i18n="clearFilter">ფილტრების გასუფთავება</button>
+        </div>
+    </main>
+
+    <!-- Contact Section -->
+    <section class="border-t border-slate-300 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-950/90 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" data-i18n="contactTitle">დაგვიკავშირდით</h2>
+                <p class="text-xs sm:text-sm text-muted mt-1" data-i18n="contactSub">ჩვენი გუნდი მზადაა გიპასუხოთ ნებისმიერ კითხვაზე 24/7 რეჟიმში</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <!-- Info cards -->
+                <div class="space-y-4">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-blue/20 text-cyber-blue flex items-center justify-center text-xl flex-shrink-0"><i class="fa-solid fa-phone"></i></div>
+                        <div>
+                            <h4 class="text-xs text-muted font-bold uppercase" data-i18n="phoneLabel">ცხელი ხაზი</h4>
+                            <p class="text-sm font-black text-slate-900 dark:text-white mt-0.5">+995 (32) 2 00 00 00</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-pink/20 text-cyber-pink flex items-center justify-center text-xl flex-shrink-0"><i class="fa-solid fa-envelope"></i></div>
+                        <div>
+                            <h4 class="text-xs text-muted font-bold uppercase" data-i18n="emailLabel">ელ.ფოსტა</h4>
+                            <p class="text-sm font-black text-slate-900 dark:text-white mt-0.5">support@nexus.tech</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-yellow/20 text-cyber-yellow flex items-center justify-center text-xl flex-shrink-0"><i class="fa-solid fa-location-dot"></i></div>
+                        <div>
+                            <h4 class="text-xs text-muted font-bold uppercase" data-i18n="addressLabel">მისამართი</h4>
+                            <p class="text-sm font-black text-slate-900 dark:text-white mt-0.5" data-i18n="addressVal">თბილისი, ი. ჭავჭავაძის გამზ. #37</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 rounded-3xl shadow-xl">
+                    <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-muted mb-1" data-i18n="formName">სახელი და გვარი</label>
+                                <input type="text" required placeholder="გიორგი გიორგაძე" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyber-blue">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-muted mb-1" data-i18n="formEmail">ელ.ფოსტა</label>
+                                <input type="email" required placeholder="giorgi@example.com" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyber-blue">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-muted mb-1" data-i18n="formMsg">შეტყობინება</label>
+                            <textarea rows="4" required placeholder="როგორ შეგვიძლია დაგეხმაროთ?..." class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyber-blue"></textarea>
+                        </div>
+                        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-cyber-blue text-slate-950 font-black text-xs uppercase rounded-xl shadow-lg shadow-cyber-blue/20 btn-interact" data-i18n="formSubmit">
+                            შეტყობინების გაგზავნა
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden pop-anim">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closeDetailsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div id="details-content" class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center"></div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleCartDrawer()"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col pop-anim">
+                <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-cart-shopping text-cyber-blue text-xl"></i>
+                        <h2 class="text-xl font-black text-slate-900 dark:text-white" data-i18n="cartTitle">თქვენი კალათა</h2>
+                    </div>
+                    <button onclick="toggleCartDrawer()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+                <div class="p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-4">
+                    <div class="flex gap-2">
+                        <input type="text" id="promo-input" placeholder="პრომო კოდი" class="uppercase flex-1 bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3 py-2 text-xs font-mono">
+                        <button onclick="applyPromoCode()" class="px-4 py-2 bg-slate-800 text-white hover:bg-cyber-blue hover:text-slate-950 rounded-xl text-xs font-bold btn-interact" data-i18n="applyPromo">გამოყენება</button>
+                    </div>
+                    <div id="promo-status" class="text-xs hidden"></div>
+                    <div class="space-y-2 pt-2">
+                        <div class="flex justify-between text-xs text-muted"><span data-i18n="subtotal">ჯამი:</span><span id="cart-subtotal" class="font-mono font-bold text-slate-900 dark:text-white">0 ₾</span></div>
+                        <div id="discount-row" class="flex justify-between text-xs text-cyber-green hidden"><span data-i18n="discount">ფასდაკლება:</span><span id="cart-discount" class="font-mono font-bold">-0 ₾</span></div>
+                        <div class="flex justify-between font-bold text-lg pt-2 border-t border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white"><span data-i18n="total">გადასახდელი:</span><span id="cart-total" class="font-mono text-cyber-blue">0 ₾</span></div>
+                    </div>
+                    <button onclick="openCheckoutModal()" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyber-blue via-purple-600 to-cyber-pink text-white font-black text-xs uppercase shadow-lg shadow-cyber-blue/20 btn-interact" data-i18n="checkoutBtn">შეკვეთის გაფორმება</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlist-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden pop-anim">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 relative shadow-2xl">
+            <div class="flex justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+                <h3 class="text-xl font-bold text-cyber-pink"><i class="fa-solid fa-heart mr-2"></i> <span data-i18n="wishlistTitle">სურვილების სია</span></h3>
+                <button onclick="closeWishlistModal()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="wishlist-container" class="py-4 space-y-3 max-h-[60vh] overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden pop-anim">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div id="checkout-form-step">
+                <h3 class="text-2xl font-black mb-1 text-slate-900 dark:text-white"><i class="fa-solid fa-credit-card text-cyber-blue mr-2"></i> <span data-i18n="checkoutModalTitle">შეკვეთის გაფორმება</span></h3>
+                <p class="text-xs text-muted mb-6" data-i18n="checkoutSub">გთხოვთ შეავსოთ მონაცემები</p>
+                <form onsubmit="handleCheckoutSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1" data-i18n="formName">სახელი და გვარი</label>
+                        <input type="text" required placeholder="გიორგი გიორგაძე" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyber-blue">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1" data-i18n="phoneLabel">ტელეფონის ნომერი</label>
+                        <input type="tel" required placeholder="599 00 00 00" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyber-blue">
+                    </div>
+                    <div class="p-4 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl space-y-3 mt-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-cyber-blue uppercase tracking-wider"><i class="fa-solid fa-shield-halved mr-1"></i> <span data-i18n="cardTitle">საბანკო ბარათი</span></span>
+                            <div class="flex gap-2 text-gray-400 text-sm"><i class="fa-brands fa-cc-visa"></i><i class="fa-brands fa-cc-mastercard"></i></div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-muted mb-1" data-i18n="cardNumber">ბარათის ნომერი</label>
+                            <input type="text" id="card-num" required value="0000 0000 0000 0000" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm font-mono text-cyber-yellow">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-muted mb-1" data-i18n="cardExp">მოქმედების ვადა</label>
+                                <input type="text" id="card-exp" required value="00/00" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm font-mono text-cyber-yellow">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-muted mb-1">CVC / CVV</label>
+                                <input type="text" id="card-cvc" required value="000" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm font-mono text-cyber-yellow">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 mt-2 bg-cyber-green hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase rounded-xl shadow-lg shadow-cyber-green/20 btn-interact" data-i18n="payBtn">
+                        გადახდა & შეკვეთის დასრულება
+                    </button>
+                </form>
+            </div>
+            <div id="receipt-step" class="hidden text-center space-y-4 py-6">
+                <div class="w-20 h-20 bg-cyber-green/20 border-2 border-cyber-green rounded-full flex items-center justify-center mx-auto text-cyber-green"><i class="fa-solid fa-check text-4xl"></i></div>
+                <h3 class="text-2xl font-black text-slate-900 dark:text-white" data-i18n="successTitle">შეკვეთა წარმატებით განხორციელდა!</h3>
+                <p class="text-xs text-muted" data-i18n="successSub">მადლობას გიხდით NEXUS TECH-ით სარგებლობისთვის!</p>
+                <button onclick="finishCheckout()" class="px-8 py-3 bg-cyber-blue text-slate-950 font-bold rounded-xl text-xs uppercase btn-interact" data-i18n="backHome">მთავარზე დაბრუნება</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-200 dark:bg-slate-950 border-t border-slate-300 dark:border-slate-800 py-8 text-center text-xs text-muted mt-auto">
+        <p>© 2026 NEXUS TECH. <span data-i18n="footerRights">ყველა უფლება დაცულია. Cyberpunk Edition.</span></p>
+    </footer>
+
+    <!-- JavaScript Application -->
+    <script>
+        // Translations Dictionary
+        const i18n = {
+            ka: {
+                cart: "კალათა",
+                aiSupport: "AI მხარდაჭერა 24/7",
+                online: "ონლაინშია",
+                aiWelcome: "გამარჯობა! 👋 მე ვარ NEXUS TECH-ის ციფრული ასისტენტი. რით შემიძლია დაგეხმაროთ?",
+                quickPromos: "🎁 პრომოები",
+                quickDelivery: "🚚 მიწოდება",
+                quickWarranty: "🛡️ გარანტია",
+                chatPh: "მოგვწერეთ კითხვა...",
+                searchPh: "მოძებნე ტექნიკა, მოწყობილობა...",
+                bannerTitle: "მომავლის ტექნოლოგიები საუკეთესო ფასად",
+                bannerDesc: "ოფიციალური გარანტია, სწრაფი მიწოდება მთელ საქართველოში და ექსკლუზიური პრომოკოდები.",
+                sortLabel: "სორტირება:",
+                sortFeatured: "პოპულარული",
+                sortPriceLow: "ფასი: დაბლიდან მაღლა",
+                sortPriceHigh: "ფასი: მაღლიდან დაბლა",
+                sortRating: "რეიტინგით",
+                filterTitle: "ფილტრი:",
+                maxPrice: "მაქს. ფასი:",
+                foundCount: "ნაპოვნია:",
+                clearFilter: "გასუფთავება",
+                noResults: "პროდუქტი ვერ მოიძებნა",
+                noResultsSub: "სცადეთ სხვა ფილტრი ან საძიებო სიტყვა",
+                contactTitle: "დაგვიკავშირდით",
+                contactSub: "ჩვენი გუნდი მზადაა გიპასუხოთ ნებისმიერ კითხვაზე 24/7 რეჟიმში",
+                phoneLabel: "ცხელი ხაზი",
+                emailLabel: "ელ.ფოსტა",
+                addressLabel: "მისამართი",
+                addressVal: "თბილისი, ი. ჭავჭავაძის გამზ. #37",
+                formName: "სახელი და გვარი",
+                formEmail: "ელ.ფოსტა",
+                formMsg: "შეტყობინება",
+                formSubmit: "შეტყობინების გაგზავნა",
+                cartTitle: "თქვენი კალათა",
+                applyPromo: "გამოყენება",
+                subtotal: "ჯამი:",
+                discount: "ფასდაკლება:",
+                total: "გადასახდელი:",
+                checkoutBtn: "შეკვეთის გაფორმება",
+                wishlistTitle: "სურვილების სია",
+                checkoutModalTitle: "შეკვეთის გაფორმება",
+                checkoutSub: "გთხოვთ შეავსოთ მონაცემები",
+                cardTitle: "საბანკო ბარათი",
+                cardNumber: "ბარათის ნომერი",
+                cardExp: "მოქმედების ვადა",
+                payBtn: "გადახდა & შეკვეთის დასრულება",
+                successTitle: "შეკვეთა წარმატებით განხორციელდა!",
+                successSub: "მადლობას გიხდით NEXUS TECH-ით სარგებლობისთვის!",
+                backHome: "მთავარზე დაბრუნება",
+                footerRights: "ყველა უფლება დაცულია. Cyberpunk Edition.",
+                addToCart: "დამატება"
+            },
+            en: {
+                cart: "Cart",
+                aiSupport: "AI Support 24/7",
+                online: "Online",
+                aiWelcome: "Hello! 👋 I am NEXUS TECH digital assistant. How can I help you today?",
+                quickPromos: "🎁 Promos",
+                quickDelivery: "🚚 Delivery",
+                quickWarranty: "🛡️ Warranty",
+                chatPh: "Type a message...",
+                searchPh: "Search electronics, devices...",
+                bannerTitle: "Technologies of the Future at Best Prices",
+                bannerDesc: "Official warranty, fast delivery worldwide, and exclusive promo codes.",
+                sortLabel: "Sort by:",
+                sortFeatured: "Featured",
+                sortPriceLow: "Price: Low to High",
+                sortPriceHigh: "Price: High to Low",
+                sortRating: "By Rating",
+                filterTitle: "Filter:",
+                maxPrice: "Max Price:",
+                foundCount: "Found:",
+                clearFilter: "Clear All",
+                noResults: "No products found",
+                noResultsSub: "Try adjusting your search or filters",
+                contactTitle: "Contact Us",
+                contactSub: "Our team is ready to answer your questions 24/7",
+                phoneLabel: "Hotline",
+                emailLabel: "Email",
+                addressLabel: "Address",
+                addressVal: "37 Chavchavadze Ave, Tbilisi, Georgia",
+                formName: "Full Name",
+                formEmail: "Email Address",
+                formMsg: "Message",
+                formSubmit: "Send Message",
+                cartTitle: "Your Shopping Cart",
+                applyPromo: "Apply",
+                subtotal: "Subtotal:",
+                discount: "Discount:",
+                total: "Total:",
+                checkoutBtn: "Proceed to Checkout",
+                wishlistTitle: "Wishlist",
+                checkoutModalTitle: "Checkout Order",
+                checkoutSub: "Please fill in your details",
+                cardTitle: "Credit Card",
+                cardNumber: "Card Number",
+                cardExp: "Expiry Date",
+                payBtn: "Pay & Complete Order",
+                successTitle: "Order Placed Successfully!",
+                successSub: "Thank you for shopping with NEXUS TECH!",
+                backHome: "Back to Home",
+                footerRights: "All rights reserved. Cyberpunk Edition.",
+                addToCart: "Add to Cart"
+            },
+            de: {
+                cart: "Warenkorb",
+                aiSupport: "KI-Support 24/7",
+                online: "Online",
+                aiWelcome: "Hallo! 👋 Ich bin der digitale Assistent von NEXUS TECH. Wie kann ich Ihnen helfen?",
+                quickPromos: "🎁 Aktionen",
+                quickDelivery: "🚚 Lieferung",
+                quickWarranty: "🛡️ Garantie",
+                chatPh: "Nachricht schreiben...",
+                searchPh: "Elektronik, Geräte suchen...",
+                bannerTitle: "Zukunftstechnologien zum besten Preis",
+                bannerDesc: "Offizielle Garantie, schnelle Lieferung und exklusive Aktionscodes.",
+                sortLabel: "Sortieren:",
+                sortFeatured: "Beliebt",
+                sortPriceLow: "Preis: Aufsteigend",
+                sortPriceHigh: "Preis: Absteigend",
+                sortRating: "Nach Bewertung",
+                filterTitle: "Filter:",
+                maxPrice: "Max. Preis:",
+                foundCount: "Gefunden:",
+                clearFilter: "Zurücksetzen",
+                noResults: "Keine Produkte gefunden",
+                noResultsSub: "Versuchen Sie es mit anderen Filtern",
+                contactTitle: "Kontaktieren Sie uns",
+                contactSub: "Unser Team ist rund um die Uhr für Sie da",
+                phoneLabel: "Hotline",
+                emailLabel: "E-Mail",
+                addressLabel: "Adresse",
+                addressVal: "Chavchavadze Ave 37, Tiflis, Georgien",
+                formName: "Vollständiger Name",
+                formEmail: "E-Mail-Adresse",
+                formMsg: "Nachricht",
+                formSubmit: "Nachricht senden",
+                cartTitle: "Ihr Warenkorb",
+                applyPromo: "Einlösen",
+                subtotal: "Zwischensumme:",
+                discount: "Rabatt:",
+                total: "Gesamtsumme:",
+                checkoutBtn: "Zur Kasse gehen",
+                wishlistTitle: "Wunschliste",
+                checkoutModalTitle: "Bestellung abschließen",
+                checkoutSub: "Bitte geben Sie Ihre Daten ein",
+                cardTitle: "Kreditkarte",
+                cardNumber: "Kartennummer",
+                cardExp: "Ablaufdatum",
+                payBtn: "Bezahlen & Abschließen",
+                successTitle: "Bestellung erfolgreich!",
+                successSub: "Vielen Dank für Ihren Einkauf bei NEXUS TECH!",
+                backHome: "Zurück zur Startseite",
+                footerRights: "Alle Rechte vorbehalten. Cyberpunk Edition.",
+                addToCart: "Hinzufügen"
+            }
+        };
+
+        const categoryNames = {
+            ka: { all: 'ყველა', phones: 'ტელეფონები', laptops: 'ლეპტოპები / ტაბები', gaming: 'გეიმინგი & VR', audio: 'ყურსასმენები', watches: 'საათები', monitors: 'მონიტორები & TV', accessories: 'აქსესუარები' },
+            en: { all: 'All', phones: 'Phones', laptops: 'Laptops / Tabs', gaming: 'Gaming & VR', audio: 'Audio', watches: 'Watches', monitors: 'Monitors & TV', accessories: 'Accessories' },
+            de: { all: 'Alle', phones: 'Smartphones', laptops: 'Laptops / Tablets', gaming: 'Gaming & VR', audio: 'Audio', watches: 'Uhren', monitors: 'Monitore & TV', accessories: 'Zubehör' }
+        };
+
+        let currentLang = 'ka';
+
+        const products = [
+            { id: 1, name: "iPhone 15 Pro Max", category: "phones", price: 3899, rating: 4.9, tag: "TOP", image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80", desc: "256GB, Titanium, A17 Pro ჩიპი", specs: ["A17 Pro Chip", "256GB Storage", "48MP Main Camera", "120Hz ProMotion"] },
+            { id: 2, name: "Samsung Galaxy S24 Ultra", category: "phones", price: 3699, rating: 4.8, tag: "SALE", image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80", desc: "512GB, Titanium Gray, Galaxy AI", specs: ["Snapdragon 8 Gen 3", "200MP Camera", "S-Pen Included", "5000mAh Battery"] },
+            { id: 3, name: "MacBook Pro 16 M3 Max", category: "laptops", price: 8999, rating: 5.0, tag: "TOP", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80", desc: "36GB RAM, 1TB SSD, Space Black", specs: ["M3 Max Chip", "36GB RAM", "1TB NVMe", "22h Battery"] },
+            { id: 4, name: "ASUS ROG Zephyrus G16", category: "laptops", price: 5499, rating: 4.8, tag: "SALE", image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80", desc: "i9 Ultra, RTX 4080, 32GB RAM, 240Hz OLED", specs: ["RTX 4080", "Intel Core i9", "240Hz OLED", "32GB RAM"] },
+            { id: 5, name: "Steam Deck OLED 1TB", category: "gaming", price: 2199, rating: 4.9, tag: "NEW", image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80", desc: "7.4″ HDR OLED, 90Hz, 1TB NVMe SSD", specs: ["HDR OLED 90Hz", "1TB Storage", "Custom AMD APU", "Wi-Fi 6E"] },
+            { id: 6, name: "Sony PlayStation 5 Slim", category: "gaming", price: 1699, rating: 4.9, tag: "TOP", image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=600&q=80", desc: "1TB SSD, DualSense კონტროლერი, 4K HDR", specs: ["1TB Custom SSD", "4K 120Hz", "Ray Tracing", "Tempest 3D Audio"] },
+            { id: 7, name: "Xbox Series X 1TB", category: "gaming", price: 1599, rating: 4.7, tag: "", image: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=600&q=80", desc: "12 Teraflops, Quick Resume, Game Pass", specs: ["12 TFLOPS", "1TB SSD", "Velocity Architecture"] },
+            { id: 8, name: "AirPods Pro 2 USB-C", category: "audio", price: 749, rating: 4.8, tag: "TOP", image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80", desc: "Active Noise Cancellation, Spatial Audio", specs: ["H2 Chip", "USB-C Case", "30h Total Battery"] },
+            { id: 9, name: "Sony WH-1000XM5", category: "audio", price: 1099, rating: 4.9, tag: "SALE", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80", desc: "უსადენო ყურსასმენები საუკეთესო NC-ით", specs: ["Best Noise Canceling", "30h Battery", "Hi-Res Wireless"] },
+            { id: 10, name: "Apple Watch Ultra 2", category: "watches", price: 2399, rating: 4.9, tag: "TOP", image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=600&q=80", desc: "49mm Titanium, 3000 nits სიკაშკაშე", specs: ["Titanium Case", "Precision GPS", "100m Water Resistant"] },
+            { id: 11, name: "Samsung Odyssey G9 OLED 49\"", category: "monitors", price: 4299, rating: 4.9, tag: "NEW", image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80", desc: "Curved Dual QHD, 240Hz, 0.03ms Response", specs: ["49 Inch OLED", "240Hz Refresh", "Neo Quantum Processor"] },
+            { id: 12, name: "Keychron Q1 Pro Wireless", category: "accessories", price: 629, rating: 4.9, tag: "NEW", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80", desc: "Full Aluminum Body, QMK/VIA Custom RGB", specs: ["CNC Aluminum", "Hot-swappable", "Bluetooth 5.1 & Type-C"] },
+            { id: 13, name: "Logitech G Pro X Superlight 2", category: "accessories", price: 429, rating: 4.8, tag: "TOP", image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=600&q=80", desc: "Ultra-lightweight 60g, HERO 2 Sensor", specs: ["60g Weight", "32,000 DPI", "95 Hours Battery"] },
+            { id: 14, name: "DJI Mini 4 Pro Drone", category: "gaming", price: 2899, rating: 4.9, tag: "NEW", image: "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=600&q=80", desc: "4K/60fps HDR, 4K Vertical Shooting, 249g", specs: ["Under 249g", "4K/60fps HDR", "Omnidirectional Sensing"] },
+            { id: 15, name: "iPad Pro 12.9 M2", category: "laptops", price: 3499, rating: 4.8, tag: "", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=600&q=80", desc: "256GB, Liquid Retina XDR, Apple Pencil 2", specs: ["M2 Chip", "Mini-LED Screen", "ProRes Video"] },
+            { id: 16, name: "PlayStation VR2 Horizon Call of the Mountain Bundle", category: "gaming", price: 1999, rating: 4.8, tag: "NEW", image: "https://images.unsplash.com/photo-1622979135225-d2ba269bc1bd?auto=format&fit=crop&w=600&q=80", desc: "4K HDR OLED, Sense Controllers, Eye Tracking + Horizon Call of the Mountain", specs: ["4K HDR OLED", "120Hz Refresh", "Horizon Game Voucher", "Sense Controllers"] },
+            { id: 17, name: "Razer Blade 18 Gaming Laptop", category: "laptops", price: 9899, rating: 4.9, tag: "TOP", image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80", desc: "i9 14900HX, RTX 4090, 64GB RAM, 240Hz", specs: ["RTX 4090", "64GB DDR5", "18 Inch QHD 240Hz"] },
+            { id: 18, name: "Mac Studio M2 Ultra", category: "laptops", price: 11499, rating: 5.0, tag: "TOP", image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80", desc: "64GB Unified Memory, 1TB SSD Workstation", specs: ["M2 Ultra Chip", "24-Core CPU", "60-Core GPU", "64GB RAM"] },
+            { id: 19, name: "GoPro HERO12 Black", category: "gaming", price: 1299, rating: 4.7, tag: "SALE", image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=600&q=80", desc: "5.3K60 Video, HyperSmooth 6.0 Stabilization", specs: ["5.3K 60FPS", "HyperSmooth 6.0", "Waterproof 10m", "HDR Video"] },
+            { id: 20, name: "Dyson Supersonic Ionic Hair Dryer", category: "accessories", price: 1399, rating: 4.9, tag: "SALE", image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80", desc: "სწრაფი გაშრობა ექსტრემალური სიცხის გარეშე, იონური ტექნოლოგია", specs: ["Intelligent Heat Control", "V9 Digital Motor", "Magnetic Attachments", "Negative Ions"] },
+            { id: 21, name: "LG C3 65\" OLED 4K Smart TV", category: "monitors", price: 4899, rating: 4.9, tag: "SALE", image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=600&q=80", desc: "120Hz, HDMI 2.1, G-Sync, Dolby Vision", specs: ["OLED evo Panel", "120Hz Native", "webOS 23"] },
+            { id: 22, name: "Samsung Galaxy Watch 6 Classic", category: "watches", price: 999, rating: 4.7, tag: "", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80", desc: "Rotating Bezel, ECG, Sleep Tracking", specs: ["Rotating Bezel", "BioActive Sensor", "Sapphire Crystal"] },
+            { id: 23, name: "Meta Quest 3 128GB", category: "gaming", price: 1899, rating: 4.8, tag: "NEW", image: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=600&q=80", desc: "Mixed Reality VR ჰედსეტი, Snapdragon XR2 Gen 2", specs: ["4K+ Display", "Mixed Reality Passthrough", "Touch Plus Controllers"] },
+            { id: 24, name: "Asus ROG Ally Z1 Extreme", category: "gaming", price: 2399, rating: 4.7, tag: "TOP", image: "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=600&q=80", desc: "7″ FHD 120Hz, Windows 11, AMD Z1 Extreme", specs: ["120Hz FHD Screen", "512GB NVMe SSD", "Windows 11 Home"] },
+            { id: 25, name: "Marshall Stanmore III", category: "audio", price: 1199, rating: 4.9, tag: "NEW", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80", desc: "ლეგენდარული რეტრო დიზაინის ბლუთუზ დინამიკი", specs: ["Bluetooth 5.2", "Dynamic Loudness", "Iconic Marshall Design"] },
+            { id: 26, name: "Fujifilm x100VI Digital Camera", category: "accessories", price: 4999, rating: 5.0, tag: "TOP", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80", desc: "40.2MP APS-C X-Trans CMOS 5 HR სენსორი, 6.2K ვიდეო", specs: ["40.2MP Sensor", "In-Body Image Stabilization", "4K/60fps & 6.2K"] },
+            { id: 27, name: "Samsung Odyssey Ark 55\"", category: "monitors", price: 7999, rating: 4.9, tag: "NEW", image: "https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=600&q=80", desc: "55-ინჩიანი 1000R კურვედ გეიმინგ მონიტორი, 165Hz", specs: ["55″ 4K Curved", "165Hz 1ms", "Cockpit Mode Rotation"] }
+        ];
+
+        const validPromos = { 'NEXUS2026': 0.15, 'CYBER20': 0.20 };
+        let cart = [];
+        let wishlist = [];
+        let currentCategory = 'all';
+        let maxPrice = 15000;
+        let appliedDiscountRate = 0;
+        let currentSort = 'featured';
+
+        function init() {
+            renderCategories();
+            renderProducts();
+            setupCardFormatting();
+            updateLanguageUI();
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            updateLanguageUI();
+            renderCategories();
+            renderProducts();
+            showToast(lang === 'ka' ? 'ენა შეიცვალა ქართულზე' : lang === 'en' ? 'Language changed to English' : 'Sprache auf Deutsch geändert');
+        }
+
+        function updateLanguageUI() {
+            const dict = i18n[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-sun text-lg text-cyber-yellow';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-moon text-lg text-gray-200';
+            }
+        }
+
+        function showToast(msg, icon = "fa-check text-cyber-green") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "toast-anim flex items-center gap-3 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold pointer-events-auto";
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function copyPromo(code) {
+            navigator.clipboard.writeText(code);
+            showToast(`პრომოკოდი "${code}" დაკოპირებულია!`, "fa-copy text-cyber-yellow");
+        }
+
+        function toggleChatWindow() {
+            document.getElementById('chat-window').classList.toggle('hidden');
+        }
+
+        function sendQuickMessage(msg) {
+            document.getElementById('chat-input').value = msg;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = "flex gap-2 items-start justify-end";
+            userMsgDiv.innerHTML = `<div class="bg-cyber-blue/20 border border-cyber-blue/40 p-3 rounded-2xl rounded-tr-none text-slate-900 dark:text-white max-w-[85%] leading-relaxed font-medium">${query}</div>`;
+            chatMessages.appendChild(userMsgDiv);
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            setTimeout(() => {
+                let botReply = "გმადლობთ შეკითხვისთვის! რით შემიძლია დაგეხმაროთ NEXUS TECH-ში?";
+                const lower = query.toLowerCase();
+                if (lower.includes('პრომო') || lower.includes('ფასდაკლება') || lower.includes('promo')) {
+                    botReply = "🎉 აქტიური კოდები: 1) **NEXUS2026** (-15%) 2) **CYBER20** (-20%)!";
+                } else if (lower.includes('მიწოდება') || lower.includes('delivery')) {
+                    botReply = "🚚 მიწოდება უფასოა 200 ლარზე ზემოთ! თბილისში იმავე დღეს.";
+                } else if (lower.includes('გარანტია') || lower.includes('warranty')) {
+                    botReply = "🛡️ ყველა ნივთზე მოქმედებს ოფიციალური 2-წლიანი გარანტია.";
+                }
+
+                const botMsgDiv = document.createElement('div');
+                botMsgDiv.className = "flex gap-2 items-start";
+                botMsgDiv.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-cyber-blue/20 text-cyber-blue flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-robot"></i></div>
+                    <div class="bg-slate-200 dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-slate-900 dark:text-gray-100 max-w-[85%] leading-relaxed shadow-sm">${botReply}</div>
+                `;
+                chatMessages.appendChild(botMsgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 500);
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('category-chips');
+            const cats = categoryNames[currentLang];
+            const catKeys = Object.keys(cats);
+
+            container.innerHTML = catKeys.map(catKey => `
+                <button onclick="setCategory('${catKey}')" class="px-4 py-2 rounded-xl text-xs font-semibold btn-interact ${currentCategory === catKey ? 'bg-cyber-blue text-slate-950 font-bold shadow-md shadow-cyber-blue/20' : 'bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-gray-200 hover:border-cyber-blue'}">
+                    ${cats[catKey]}
+                </button>
+            `).join('');
+        }
+
+        function setCategory(id) {
+            currentCategory = id;
+            renderCategories();
+            renderProducts();
+        }
+
+        function handlePriceRange(val) {
+            maxPrice = parseInt(val);
+            document.getElementById('price-range-val').innerText = `${maxPrice} ₾`;
+            renderProducts();
+        }
+
+        function handleSortChange() {
+            currentSort = document.getElementById('sort-select').value;
+            renderProducts();
+        }
+
+        function handleSearch() {
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const grid = document.getElementById('products-grid');
+            const dict = i18n[currentLang];
+            
+            let filtered = products.filter(p => {
+                const matchCat = currentCategory === 'all' || p.category === currentCategory;
+                const matchPrice = p.price <= maxPrice;
+                const matchSearch = p.name.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
+                return matchCat && matchPrice && matchSearch;
+            });
+
+            if (currentSort === 'price-low') filtered.sort((a, b) => a.price - b.price);
+            if (currentSort === 'price-high') filtered.sort((a, b) => b.price - a.price);
+            if (currentSort === 'rating') filtered.sort((a, b) => b.rating - a.rating);
+
+            document.getElementById('product-count').innerText = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('no-results').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('no-results').classList.add('hidden');
+            grid.innerHTML = filtered.map(p => {
+                const inWishlist = wishlist.includes(p.id);
+                return `
+                <div class="product-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between relative group">
+                    <div>
+                        <div class="relative w-full h-48 bg-slate-950 rounded-xl mb-4 overflow-hidden cursor-pointer border border-white/10 group-hover:scale-[1.02] transition-transform" onclick="openDetailsModal(${p.id})">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80'">
+                            
+                            ${p.tag ? `<span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${p.tag === 'TOP' ? 'bg-cyber-pink text-white' : p.tag === 'SALE' ? 'bg-cyber-green text-slate-950' : 'bg-cyber-blue text-slate-950'}">${p.tag}</span>` : ''}
+
+                            <button onclick="event.stopPropagation(); toggleWishlist(${p.id})" class="absolute top-2 right-2 p-2 rounded-full bg-slate-900/80 text-gray-200 hover:text-cyber-pink btn-interact">
+                                <i class="${inWishlist ? 'fa-solid fa-heart text-cyber-pink' : 'fa-regular fa-heart'}"></i>
+                            </button>
+                            
+                            <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-slate-900/80 text-[10px] text-cyber-yellow font-bold">
+                                <i class="fa-solid fa-star mr-1"></i>${p.rating}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-sm mb-1 text-slate-900 dark:text-white cursor-pointer hover:text-cyber-blue transition-colors line-clamp-1" onclick="openDetailsModal(${p.id})">${p.name}</h3>
+                        <p class="text-xs text-muted mb-4 line-clamp-2">${p.desc}</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800">
+                        <span class="text-lg font-black text-cyber-blue font-mono">${p.price} ₾</span>
+                        <button onclick="addToCart(${p.id})" class="px-3.5 py-2 rounded-xl bg-cyber-blue/10 border border-cyber-blue/40 text-cyber-blue text-xs font-bold hover:bg-cyber-blue hover:text-slate-950 transition-all flex items-center gap-1.5 btn-interact">
+                            <i class="fa-solid fa-cart-plus"></i> ${dict.addToCart}
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function openDetailsModal(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+            const dict = i18n[currentLang];
+            
+            const container = document.getElementById('details-content');
+            container.innerHTML = `
+                <div class="bg-slate-950 rounded-2xl h-64 overflow-hidden border border-white/10 relative">
+                    <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80'">
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <span class="text-[10px] font-bold text-cyber-blue uppercase tracking-wider">${p.category}</span>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white">${p.name}</h2>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs text-cyber-yellow font-bold"><i class="fa-solid fa-star mr-1"></i>${p.rating} / 5.0</span>
+                            <span class="text-xs text-muted">• 2 Year Warranty</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-muted leading-relaxed">${p.desc}</p>
+                    <div class="space-y-1">
+                        <span class="text-[11px] font-bold text-muted uppercase">Specs:</span>
+                        <ul class="grid grid-cols-2 gap-1 text-xs text-slate-800 dark:text-gray-200">
+                            ${p.specs.map(s => `<li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-cyber-blue text-[10px]"></i> ${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <span class="text-2xl font-black text-cyber-blue font-mono">${p.price} ₾</span>
+                        <button onclick="addToCart(${p.id}); closeDetailsModal();" class="px-5 py-3 rounded-xl bg-cyber-blue text-slate-950 font-black text-xs uppercase btn-interact">
+                            <i class="fa-solid fa-cart-plus mr-1"></i> ${dict.addToCart}
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('details-modal').classList.remove('hidden');
+        }
+
+        function closeDetailsModal() { document.getElementById('details-modal').classList.add('hidden'); }
+
+        function addToCart(id) {
+            const prod = products.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            if (existing) existing.qty++;
+            else cart.push({ ...prod, qty: 1 });
+            updateCart();
+            showToast(`${prod.name} - ${i18n[currentLang].addToCart}`);
+            confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+            updateCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCart();
+        }
+
+        function updateCart() {
+            const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+            document.getElementById('cart-badge').innerText = totalItems;
+            
+            const container = document.getElementById('cart-items-container');
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-center text-xs text-muted py-12"><i class="fa-solid fa-basket-shopping text-3xl mb-2 block"></i>Cart is empty</p>';
+                document.getElementById('cart-subtotal').innerText = '0 ₾';
+                document.getElementById('cart-total').innerText = '0 ₾';
+                document.getElementById('discount-row').classList.add('hidden');
+                return;
+            }
+
+            container.innerHTML = cart.map(item => `
+                <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <img src="${item.image}" class="w-12 h-12 object-cover rounded-lg" onerror="this.src='https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80'">
+                    <div class="flex-1">
+                        <h4 class="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">${item.name}</h4>
+                        <span class="text-xs text-cyber-blue font-mono font-bold">${item.price} ₾</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-slate-200 dark:bg-slate-900 px-2 py-1 rounded-lg">
+                        <button onclick="changeQty(${item.id}, -1)" class="text-xs"><i class="fa-solid fa-minus"></i></button>
+                        <span class="text-xs font-bold font-mono px-1">${item.qty}</span>
+                        <button onclick="changeQty(${item.id}, 1)" class="text-xs"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-cyber-pink text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const discountAmount = subtotal * appliedDiscountRate;
+            const finalTotal = subtotal - discountAmount;
+
+            document.getElementById('cart-subtotal').innerText = `${subtotal} ₾`;
+            if (appliedDiscountRate > 0) {
+                document.getElementById('discount-row').classList.remove('hidden');
+                document.getElementById('cart-discount').innerText = `-${discountAmount.toFixed(0)} ₾`;
+            } else {
+                document.getElementById('discount-row').classList.add('hidden');
+            }
+            document.getElementById('cart-total').innerText = `${finalTotal.toFixed(0)} ₾`;
+        }
+
+        function toggleCartDrawer() { document.getElementById('cart-drawer').classList.toggle('hidden'); }
+
+        function applyPromoCode() {
+            const input = document.getElementById('promo-input').value.trim().toUpperCase();
+            const statusEl = document.getElementById('promo-status');
+            if (validPromos[input]) {
+                appliedDiscountRate = validPromos[input];
+                statusEl.className = "text-xs text-cyber-green block font-bold";
+                statusEl.innerText = `✓ Promo Active (-${appliedDiscountRate * 100}%)`;
+                updateCart();
+                showToast("Promo Code Applied!");
+            } else {
+                statusEl.className = "text-xs text-cyber-pink block font-bold";
+                statusEl.innerText = "✗ Invalid Promo Code";
+            }
+        }
+
+        function toggleWishlist(id) {
+            const prod = products.find(p => p.id === id);
+            if (wishlist.includes(id)) {
+                wishlist = wishlist.filter(i => i !== id);
+                showToast(`${prod.name} removed`, "fa-heart-broken text-cyber-pink");
+            } else {
+                wishlist.push(id);
+                showToast(`${prod.name} added!`, "fa-heart text-cyber-pink");
+            }
+            const badge = document.getElementById('wishlist-badge');
+            badge.innerText = wishlist.length;
+            badge.classList.toggle('hidden', wishlist.length === 0);
+            renderProducts();
+        }
+
+        function openWishlistModal() {
+            const container = document.getElementById('wishlist-container');
+            if (wishlist.length === 0) {
+                container.innerHTML = '<p class="text-center text-xs text-muted py-8">Wishlist is empty</p>';
+            } else {
+                const items = products.filter(p => wishlist.includes(p.id));
+                container.innerHTML = items.map(p => `
+                    <div class="flex items-center justify-between bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.image}" class="w-10 h-10 object-cover rounded-lg" onerror="this.src='https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80'">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 dark:text-white">${p.name}</h4>
+                                <span class="text-xs text-cyber-blue font-mono">${p.price} ₾</span>
+                            </div>
+                        </div>
+                        <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-cyber-blue text-slate-950 rounded-lg text-xs font-bold btn-interact">To Cart</button>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('wishlist-modal').classList.remove('hidden');
+        }
+
+        function closeWishlistModal() { document.getElementById('wishlist-modal').classList.add('hidden'); }
+
+        function openCheckoutModal() {
+            if (cart.length === 0) return alert('Cart is empty!');
+            toggleCartDrawer();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            showToast(currentLang === 'ka' ? "შეტყობინება გაიგზავნა!" : "Message sent successfully!");
+            e.target.reset();
+            confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
+        }
+
+        function handleCheckoutSubmit(e) {
+            e.preventDefault();
+            document.getElementById('checkout-form-step').classList.add('hidden');
+            document.getElementById('receipt-step').classList.remove('hidden');
+            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        }
+
+        function finishCheckout() {
+            cart = [];
+            appliedDiscountRate = 0;
+            document.getElementById('promo-input').value = '';
+            document.getElementById('promo-status').classList.add('hidden');
+            updateCart();
+            closeCheckoutModal();
+            document.getElementById('checkout-form-step').classList.remove('hidden');
+            document.getElementById('receipt-step').classList.add('hidden');
+        }
+
+        function resetFilters() {
+            currentCategory = 'all';
+            maxPrice = 15000;
+            currentSort = 'featured';
+            document.getElementById('price-range').value = 15000;
+            document.getElementById('price-range-val').innerText = '15000 ₾';
+            document.getElementById('search-input').value = '';
+            document.getElementById('sort-select').value = 'featured';
+            renderCategories();
+            renderProducts();
+        }
+
+        function setupCardFormatting() {
+            const cardNum = document.getElementById('card-num');
+            cardNum.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                e.target.value = v.replace(/(.{4})/g, '$1 ').trim();
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
